@@ -183,27 +183,6 @@ Musywar/
    </form>
    ```
 
-## 🔍 Snort/Suricata Evasion
-
-Sistem ini dirancang untuk menghindari deteksi rules yang Anda berikan:
-
-### XSS Evasion Techniques
-- **Character Substitution**: `scr` + `ipt` instead of `script`
-- **Encoding**: Base64, Hex, URL encoding
-- **Event Handlers**: `onerror`, `onload` variations
-- **DOM Methods**: `innerHTML`, `document.write` alternatives
-
-### SQL Evasion Techniques  
-- **Comment Injection**: `UN/**/ION` instead of `UNION`
-- **Case Mixing**: `UnIoN sElEcT`
-- **Space Alternatives**: `+`, `%20`, `/**/`
-- **Function Alternatives**: `CHAR()`, `CONCAT()` variations
-
-### CSRF Evasion
-- **No Token Validation**: Semua form vulnerable
-- **GET Method Abuse**: State changes via GET
-- **JSON CSRF**: Content-Type manipulation
-
 ## 🎓 Learning Objectives
 
 Sistem ini cocok untuk:
