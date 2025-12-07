@@ -135,21 +135,18 @@ function createPost($title, $content, $categoryId, $userId)
 function searchPosts($keyword)
 {
     global $pdo;
-    // Vulnerable search - escape quotes untuk stabilitas tapi tetap vulnerable untuk XSS
-    $keyword = addslashes($keyword); // Basic escaping untuk SQL, tapi tidak untuk XSS
+    // COMPLETELY VULNERABLE - Perfect for UNION injection testing
 
     try {
-        $query = "SELECT p.*, u.username, c.name as category_name
-                  FROM posts p 
-                  JOIN users u ON p.user_id = u.id 
-                  JOIN categories c ON p.category_id = c.id 
-                  WHERE (p.title LIKE '%$keyword%' OR p.content LIKE '%$keyword%') 
-                  AND p.status = 'published'
-                  ORDER BY p.created_at DESC";
+        // Simplified query structure - 6 columns for easy UNION injection
+        $query = "SELECT p.id, p.title, p.content, p.created_at, u.username, c.name FROM posts p JOIN users u ON p.user_id = u.id JOIN categories c ON p.category_id = c.id WHERE p.title LIKE '%$keyword%'";
+        
         $stmt = $pdo->query($query);
         return $stmt->fetchAll();
     } catch (PDOException $e) {
-        // Return empty array on SQL error
+        // Show detailed error for exploitation
+        echo "<div class='alert alert-danger'>SQL Error: " . $e->getMessage() . "</div>";
+        echo "<div class='alert alert-info'>Query: " . htmlspecialchars($query) . "</div>";
         return [];
     }
 }
