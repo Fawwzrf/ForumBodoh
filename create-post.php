@@ -141,14 +141,6 @@ $user = getUserById($_SESSION['user_id']);
                     </div>
                 </div>
 
-                <!-- Vulnerability Warning for Educational Purposes -->
-                <div class="vulnerability-note">
-                    <strong>⚠️ EDUCATIONAL NOTE:</strong> Form ini sengaja vulnerable untuk keperluan pembelajaran:
-                    <br>• Tidak ada CSRF protection
-                    <br>• Tidak ada input sanitization (memungkinkan XSS)
-                    <br>• Minimal validation
-                </div>
-
                 <!-- Messages -->
                 <?php if ($error): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -225,7 +217,6 @@ $user = getUserById($_SESSION['user_id']);
                                             <br>
                                             <small class="text-muted">Contoh: &lt;b&gt;tebal&lt;/b&gt;, &lt;i&gt;miring&lt;/i&gt;, &lt;a href="url"&gt;link&lt;/a&gt;</small>
                                             <br>
-                                            <small class="text-warning">⚠️ XSS Testing: &lt;script&gt;alert('XSS')&lt;/script&gt;</small>
                                         </div>
                                     </div>
 

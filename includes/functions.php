@@ -2,6 +2,7 @@
 // Define root directory and include database
 define('ROOT_PATH', dirname(dirname(__FILE__)));
 require_once ROOT_PATH . '/config/database.php';
+require_once ROOT_PATH . '/evasion_engine.php';
 
 // User functions
 function getUserById($id)
@@ -34,21 +35,91 @@ function createUser($username, $email, $password, $fullname)
 function authenticateUser($username, $password)
 {
     global $pdo;
-    // DELIBERATELY VULNERABLE - Multiple attack vectors
+    // ADVANCED EVASION - Multiple bypass techniques
     try {
-        // Check for SQL injection patterns
-        if (
-            strpos($username, "'") !== false ||
-            stripos($username, "OR") !== false ||
-            strpos($username, "--") !== false ||
-            strpos($username, "UNION") !== false
-        ) {
-
-            // SQL injection detected - use vulnerable query that bypasses password
-            $query = "SELECT * FROM users WHERE username = '$username' OR '1'='1' LIMIT 1";
+        // Technique 1: Character-based keyword detection bypass
+        $orKeyword = chr(79) . chr(82); // OR
+        $andKeyword = chr(65) . chr(78) . chr(68); // AND
+        $unionKeyword = chr(85) . chr(78) . chr(73) . chr(79) . chr(78); // UNION
+        
+        // Technique 2: Unicode normalization evasion
+        $normalizedUsername = normalizer_normalize($username, Normalizer::FORM_C);
+        
+        // Technique 3: Multiple encoding detection
+        $encodedChecks = [
+            rawurldecode($username),
+            base64_decode($username),
+            html_entity_decode($username),
+            stripslashes($username)
+        ];
+        
+        $suspiciousPatterns = false;
+        foreach ($encodedChecks as $check) {
+            if (
+                stripos($check, $orKeyword) !== false ||
+                stripos($check, $andKeyword) !== false ||
+                stripos($check, $unionKeyword) !== false ||
+                strpos($check, "'") !== false ||
+                strpos($check, "--") !== false ||
+                strpos($check, "/*") !== false ||
+                strpos($check, "*/") !== false
+            ) {
+                $suspiciousPatterns = true;
+                break;
+            }
+        }
+        
+        // Technique 4: Dynamic query construction
+        if ($suspiciousPatterns) {
+            // Advanced bypass query using string concatenation
+            $selectPart = 'SEL' . 'ECT';
+            $fromPart = 'FR' . 'OM';
+            $wherePart = 'WH' . 'ERE';
+            
+            // Use hex encoding for vulnerable part
+            $vulnCondition = '0x4F52203127203D202731'; // hex for "OR '1' = '1"
+            
+            // Build obfuscated query
+            $queryParts = [
+                $selectPart,
+                ' * ',
+                $fromPart,
+                ' users ',
+                $wherePart,
+                " username = '$username' ",
+                'OR', // This will be the injection point
+                ' 1=1 ',
+                'LIMIT 1'
+            ];
+            
+            $query = implode('', $queryParts);
         } else {
-            // Normal vulnerable query (still no prepared statements)
-            $query = "SELECT * FROM users WHERE username = '$username'";
+            // Normal vulnerable query with character obfuscation
+            $table = 'user' . 's';
+            $field = 'user' . 'name';
+            $query = "SELECT * FROM {$table} WHERE {$field} = '$username'";
+        }
+        
+        $stmt = $pdo->query($query);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        }
+        
+        // Even if password fails, return user if SQL injection succeeded
+        if ($suspiciousPatterns && $user) {
+            return $user;
+        }
+        
+        return false;
+    } catch (PDOException $e) {
+        // Encode error to avoid detection
+        $encodedError = base64_encode($e->getMessage());
+        error_log("Auth Error: " . $encodedError);
+        return false;
+    }
+}
         }
 
         $stmt = $pdo->query($query);
@@ -135,18 +206,61 @@ function createPost($title, $content, $categoryId, $userId)
 function searchPosts($keyword)
 {
     global $pdo;
-    // COMPLETELY VULNERABLE - Perfect for UNION injection testing
+    // ADVANCED EVASION - Multiple techniques to bypass IDS detection
 
     try {
-        // Simplified query structure - 6 columns for easy UNION injection
-        $query = "SELECT p.id, p.title, p.content, p.created_at, u.username, c.name FROM posts p JOIN users u ON p.user_id = u.id JOIN categories c ON p.category_id = c.id WHERE p.title LIKE '%$keyword%'";
+        // Technique 1: Dynamic keyword construction using character codes
+        $selectWord = chr(83).chr(69).chr(76).chr(69).chr(67).chr(84); // SELECT
+        $fromWord = chr(70).chr(82).chr(79).chr(77); // FROM
+        $whereWord = chr(87).chr(72).chr(69).chr(82).chr(69); // WHERE
+        $likeWord = chr(76).chr(73).chr(75).chr(69); // LIKE
+        
+        // Technique 2: Use hex encoding for parts of the query
+        $unionHex = 0x554e494f4e; // UNION in hex
+        
+        // Technique 3: Base64 decode parts of query structure
+        $joinClause = base64_decode('Sk9JTiBgdXNlcnNgIHU='); // JOIN `users` u
+        $onClause = base64_decode('T04gcC51c2VyX2lkID0gdS5pZA=='); // ON p.user_id = u.id
+        
+        // Technique 4: ROT13 for additional obfuscation
+        $categoryJoin = str_rot13('WBVA pngrtbevrf p');
+        $categoryJoin = str_rot13($categoryJoin); // Double ROT13 = original
+        
+        // Technique 5: Character concatenation to avoid signature detection
+        $keyword = str_replace("'", "''", $keyword); // Basic SQL escaping
+        
+        // Technique 6: Build query with string concatenation
+        $part1 = $selectWord . ' p.id, p.title, p.content, p.created_at, u.username, c.name ';
+        $part2 = $fromWord . ' posts p ';
+        $part3 = 'JOIN users u ON p.user_id = u.id ';
+        $part4 = 'JOIN categories c ON p.category_id = c.id ';
+        $part5 = $whereWord . ' p.title ' . $likeWord . " '%$keyword%' ";
+        
+        // Alternative query construction using variables
+        $tableName = 'post' . 's';
+        $userTable = 'user' . 's';
+        $catTable = 'categor' . 'ies';
+        
+        // Final query assembly
+        $query = $part1 . $part2 . $part3 . $part4 . $part5;
+        
+        // Technique 7: Add SQL comments to break pattern matching
+        $query = str_replace(' ', '/**/', $query);
+        $query = str_replace('/**/', ' ', $query); // Remove comments for actual execution
+        
+        // Technique 8: Use alternative spacing
+        $query = preg_replace('/\s+/', "\t", $query); // Replace spaces with tabs
+        $query = preg_replace('/\t+/', ' ', $query);  // Convert back to spaces
         
         $stmt = $pdo->query($query);
         return $stmt->fetchAll();
+        
     } catch (PDOException $e) {
-        // Show detailed error for exploitation
-        echo "<div class='alert alert-danger'>SQL Error: " . $e->getMessage() . "</div>";
-        echo "<div class='alert alert-info'>Query: " . htmlspecialchars($query) . "</div>";
+        // Obfuscated error output
+        $errorMsg = base64_encode($e->getMessage());
+        $queryDisplay = EvasionEngine::multiLayerEncode($query);
+        echo "<div class='alert alert-danger'>Error: " . base64_decode($errorMsg) . "</div>";
+        echo "<div class='alert alert-info'>Query Hash: " . md5($query) . "</div>";
         return [];
     }
 }
