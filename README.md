@@ -27,14 +27,6 @@ This platform is designed for advanced penetration testing research, specificall
 - **Context-aware Payloads**: HTML, JavaScript, CSS, and attribute-specific XSS vectors
 - **WAF Bypass Techniques**: Cloudflare, Akamai, AWS WAF, and generic bypass methods
 
-### Testing Framework
-- **Automated Payload Generation**: Dynamic creation of evasive payloads
-- **Real-time Analysis**: Detection evasion scoring and effectiveness measurement
-- **Comprehensive Testing Suite**: SQL injection, XSS, CSRF, and timing attack alternatives
-- **Client-side Testing**: JavaScript-based DOM manipulation and AJAX attacks
-- **WebSocket Evasion**: Protocol-level evasion testing
-- **Python Automation**: Comprehensive automated testing scripts
-
 ## 📁 File Structure
 
 ### Core Files
@@ -96,60 +88,6 @@ This platform is designed for advanced penetration testing research, specificall
 - **SLEEP Function Alternatives**: BENCHMARK, mathematical operations, heavy queries
 - **Conditional Response Timing**: Using response time variations for data extraction
 - **Resource Exhaustion**: CPU and memory intensive operations for timing
-
-## 🧪 Testing Framework
-
-### Core Testing Modules
-
-#### 1. Advanced Evasion Testing (`test_evasion_advanced.php`)
-- Comprehensive testing interface for all evasion techniques
-- Real-time effectiveness measurement
-- Bypass success rate calculation
-- Detection evasion scoring system
-
-#### 2. Payload Generator (`payload_generator.php`)
-- Automated generation of evasive payloads
-- Context-aware payload creation
-- Multi-technique payload combination
-- Custom payload modification tools
-
-#### 3. Master Demo Platform (`master_evasion_demo.php`)
-- Interactive demonstration interface
-- Live testing environment
-- Technique comparison tools
-- Educational overlay explanations
-
-#### 4. Client-side Testing (`client_evasion.js`)
-- DOM-based attack vectors
-- AJAX request manipulation
-- Local storage exploitation
-- Browser-specific bypass techniques
-
-#### 5. WebSocket Evasion (`websocket_evasion.php`)
-- Protocol-level evasion testing
-- Real-time communication bypasses
-- Binary payload transmission
-- Connection upgrade exploitation
-
-#### 6. Python Automation (`evasion_tester.py`)
-- Automated comprehensive testing
-- Batch payload execution
-- Results aggregation and analysis
-- Performance benchmarking
-
-## 📊 Effectiveness Metrics
-
-Our testing framework has achieved the following bypass effectiveness rates:
-
-| Technique Category | Suricata Bypass Rate | Snort Bypass Rate | ModSecurity Bypass |
-|-------------------|---------------------|-------------------|-------------------|
-| Character Obfuscation | 95% | 92% | 88% |
-| Dynamic Construction | 98% | 96% | 91% |
-| Protocol Manipulation | 87% | 85% | 79% |
-| Context-Aware XSS | 93% | 89% | 86% |
-| WAF-Specific Bypasses | 89% | 87% | 94% |
-| Timing Alternatives | 96% | 94% | 90% |
-| **Overall Average** | **93%** | **90%** | **88%** |
 
 ## 🛠️ Installation and Setup
 

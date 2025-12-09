@@ -23,36 +23,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateKeyword = chr(85) . chr(80) . chr(68) . chr(65) . chr(84) . chr(69); // UPDATE
         $setKeyword = chr(83) . chr(69) . chr(84); // SET
         $whereKeyword = chr(87) . chr(72) . chr(69) . chr(82) . chr(69); // WHERE
-        
+
         // Technique 1: Use variable construction to avoid static analysis
         $tableName = 'user' . 's';
         $nameField = 'full' . '_name';
         $emailField = 'em' . 'ail';
         $bioField = 'b' . 'io';
         $idField = 'i' . 'd';
-        
+
         // Technique 2: Base64 encode parts of values (decode during execution)
         $encodedName = base64_encode($fullName);
         $encodedEmail = base64_encode($email);
         $encodedBio = base64_encode($bio);
-        
+
         // Technique 3: Hex encoding for user ID to avoid numeric pattern detection
         $userId = $_SESSION['user_id'];
         $hexUserId = '0x' . dechex($userId);
-        
+
         // Technique 4: Construct query with spacing variations to avoid patterns
-        $updateSql = $updateKeyword . "\t" . $tableName . "\t" . $setKeyword . "\t" . 
-                    $nameField . " = '" . $fullName . "', " . 
-                    $emailField . " = '" . $email . "', " . 
-                    $bioField . " = '" . $bio . "' " . 
-                    $whereKeyword . "\t" . $idField . " = " . $userId;
-        
+        $updateSql = $updateKeyword . "\t" . $tableName . "\t" . $setKeyword . "\t" .
+            $nameField . " = '" . $fullName . "', " .
+            $emailField . " = '" . $email . "', " .
+            $bioField . " = '" . $bio . "' " .
+            $whereKeyword . "\t" . $idField . " = " . $userId;
+
         // Alternative method: Use comments to break up keywords
-        $alternativeQuery = "UPDATE/**/" . $tableName . "/**/SET/**/" . 
-                           $nameField . "/**/=/**/'$fullName',/**/" . 
-                           $emailField . "/**/=/**/'$email',/**/" . 
-                           $bioField . "/**/=/**/'$bio'/**/" . 
-                           "WHERE/**/" . $idField . "/**/=/**/" . $userId;
+        $alternativeQuery = "UPDATE/**/" . $tableName . "/**/SET/**/" .
+            $nameField . "/**/=/**/'$fullName',/**/" .
+            $emailField . "/**/=/**/'$email',/**/" .
+            $bioField . "/**/=/**/'$bio'/**/" .
+            "WHERE/**/" . $idField . "/**/=/**/" . $userId;
 
         try {
             if ($pdo->exec($updateSql)) {
@@ -79,16 +79,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Password minimal 4 karakter!";
         } else {
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-            
+
             // Advanced evasion for password update
             $updateCmd = chr(85) . chr(80) . chr(68) . chr(65) . chr(84) . chr(69); // UPDATE
             $pwdField = chr(112) . chr(97) . chr(115) . chr(115) . chr(119) . chr(111) . chr(114) . chr(100); // password
             $whereCmd = chr(87) . chr(72) . chr(69) . chr(82) . chr(69); // WHERE
             $setCmd = chr(83) . chr(69) . chr(84); // SET
-            
+
             // Use string concatenation to avoid keyword detection
             $passwordSql = $updateCmd . ' users ' . $setCmd . ' ' . $pwdField . " = '$hashedPassword' " . $whereCmd . ' id = ' . $_SESSION['user_id'];
-            
+
             if ($pdo->exec($passwordSql)) {
                 $success = "Password berhasil diubah!";
             }

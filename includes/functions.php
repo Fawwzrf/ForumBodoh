@@ -35,126 +35,25 @@ function createUser($username, $email, $password, $fullname)
 function authenticateUser($username, $password)
 {
     global $pdo;
-    // ADVANCED EVASION - Multiple bypass techniques
+
     try {
-        // Technique 1: Character-based keyword detection bypass
-        $orKeyword = chr(79) . chr(82); // OR
-        $andKeyword = chr(65) . chr(78) . chr(68); // AND
-        $unionKeyword = chr(85) . chr(78) . chr(73) . chr(79) . chr(78); // UNION
-        
-        // Technique 2: Unicode normalization evasion
-        $normalizedUsername = normalizer_normalize($username, Normalizer::FORM_C);
-        
-        // Technique 3: Multiple encoding detection
-        $encodedChecks = [
-            rawurldecode($username),
-            base64_decode($username),
-            html_entity_decode($username),
-            stripslashes($username)
-        ];
-        
-        $suspiciousPatterns = false;
-        foreach ($encodedChecks as $check) {
-            if (
-                stripos($check, $orKeyword) !== false ||
-                stripos($check, $andKeyword) !== false ||
-                stripos($check, $unionKeyword) !== false ||
-                strpos($check, "'") !== false ||
-                strpos($check, "--") !== false ||
-                strpos($check, "/*") !== false ||
-                strpos($check, "*/") !== false
-            ) {
-                $suspiciousPatterns = true;
-                break;
-            }
-        }
-        
-        // Technique 4: Dynamic query construction
-        if ($suspiciousPatterns) {
-            // Advanced bypass query using string concatenation
-            $selectPart = 'SEL' . 'ECT';
-            $fromPart = 'FR' . 'OM';
-            $wherePart = 'WH' . 'ERE';
-            
-            // Use hex encoding for vulnerable part
-            $vulnCondition = '0x4F52203127203D202731'; // hex for "OR '1' = '1"
-            
-            // Build obfuscated query
-            $queryParts = [
-                $selectPart,
-                ' * ',
-                $fromPart,
-                ' users ',
-                $wherePart,
-                " username = '$username' ",
-                'OR', // This will be the injection point
-                ' 1=1 ',
-                'LIMIT 1'
-            ];
-            
-            $query = implode('', $queryParts);
-        } else {
-            // Normal vulnerable query with character obfuscation
-            $table = 'user' . 's';
-            $field = 'user' . 'name';
-            $query = "SELECT * FROM {$table} WHERE {$field} = '$username'";
-        }
-        
-        $stmt = $pdo->query($query);
-        $user = $stmt->fetch();
+        // Use a prepared statement to prevent SQL injection
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username LIMIT 1");
+        $stmt->execute([':username' => $username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            return $user;
-        }
-        
-        // Even if password fails, return user if SQL injection succeeded
-        if ($suspiciousPatterns && $user) {
-            return $user;
-        }
-        
-        return false;
-    } catch (PDOException $e) {
-        // Encode error to avoid detection
-        $encodedError = base64_encode($e->getMessage());
-        error_log("Auth Error: " . $encodedError);
-        return false;
-    }
-}
-        }
-
-        $stmt = $pdo->query($query);
-        $user = $stmt->fetch();
-
-        // For injection attacks, bypass password check completely
-        if ($user && (strpos($username, "'") !== false || stripos($username, "OR") !== false)) {
-            return $user; // Return first user found (authentication bypass)
-        }
-
-        // For normal logins, check password
         if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
 
         return false;
     } catch (PDOException $e) {
-        // Information disclosure - show SQL errors
-        echo "<div class='alert alert-danger'>SQL Error: " . htmlspecialchars($e->getMessage()) . "</div>";
-
-        // Try fallback vulnerable query
-        try {
-            $fallbackQuery = "SELECT * FROM users WHERE username = 'admin' OR '1'='1' LIMIT 1";
-            $stmt = $pdo->query($fallbackQuery);
-            $user = $stmt->fetch();
-            if ($user) {
-                return $user; // Return admin user as fallback
-            }
-        } catch (Exception $e2) {
-            // Silent fail for fallback
-        }
-
+        // Log the error and return false without exposing details
+        error_log("Auth Error: " . $e->getMessage());
         return false;
     }
 }
+
 
 function updateLastActivity($userId)
 {
